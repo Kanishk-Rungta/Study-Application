@@ -6,6 +6,8 @@ import { Week, Task, PenaltyLog, Attendance } from '../models.js';
 
 dotenv.config();
 
+mongoose.set('bufferCommands', false);
+
 const app = express();
 
 app.use(cors());
