@@ -1,0 +1,383 @@
+:root {
+  --ice-primary: #00d4ff;
+  --ice-glow: rgba(0, 212, 255, 0.6);
+  --fire-primary: #ff4d00;
+  --fire-glow: rgba(255, 77, 0, 0.6);
+  --bg-deep: #000000;
+  --card-glass: rgba(15, 23, 42, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.15);
+}
+
+body {
+  background-color: var(--bg-deep);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: #f1f5f9;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand, .btn {
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* --- HOMEPAGE SPECIFIC (LOCKED VERSION) --- */
+.identity-selector {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+.neon-white-glow {
+  color: #ffffff;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.2);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.subtitle-fire-ice {
+  background: linear-gradient(90deg, var(--fire-primary), #ffffff, var(--ice-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 5px;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.selector-grid {
+  display: flex;
+  gap: 2.5rem;
+  z-index: 2;
+  width: 100%;
+  max-width: 950px;
+  padding: 2rem;
+}
+
+.identity-pane {
+  flex: 1;
+  height: 450px;
+  border-radius: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.identity-pane.ice { background: linear-gradient(180deg, rgba(0, 212, 255, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%); }
+.identity-pane.fire { background: linear-gradient(180deg, rgba(255, 77, 0, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%); }
+
+.identity-pane:hover { transform: scale(1.02); }
+.identity-pane.ice:hover { border-color: var(--ice-primary); box-shadow: 0 0 40px var(--ice-glow); }
+.identity-pane.fire:hover { border-color: var(--fire-primary); box-shadow: 0 0 40px var(--fire-glow); }
+
+.name-gradient-ice {
+  background: linear-gradient(135deg, #ffffff 0%, var(--ice-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  display: inline-block;
+  text-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+  font-size: 3rem;
+}
+
+.name-gradient-fire {
+  background: linear-gradient(135deg, var(--fire-primary) 0%, #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  display: inline-block;
+  text-shadow: 0 0 15px rgba(255, 77, 0, 0.2);
+  font-size: 3rem;
+}
+
+.desc-fire { color: #ffd1b3; font-size: 1.1rem; font-weight: 500; max-width: 80%; margin-top: 1rem; text-align: center; }
+.desc-ice { color: #d1f7ff; font-size: 1.1rem; font-weight: 500; max-width: 80%; margin-top: 1rem; text-align: center; }
+
+/* PARTICLES */
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.ember, .frost { position: absolute; width: 4px; height: 4px; border-radius: 50%; }
+.ember { background: var(--fire-primary); box-shadow: 0 0 10px var(--fire-primary); }
+.frost { background: var(--ice-primary); box-shadow: 0 0 10px var(--ice-primary); }
+
+.text-ice { 
+  color: var(--ice-primary) !important; 
+  filter: drop-shadow(0 0 15px var(--ice-primary));
+}
+
+.text-fire { 
+  color: var(--fire-primary) !important; 
+  filter: drop-shadow(0 0 15px var(--fire-primary));
+}
+
+/* --- DASHBOARD (COSMIC FIRE & ICE) --- */
+.app-container {
+  min-height: 100vh;
+  background-color: #020205;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.15) 0%, transparent 40%),
+    url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-attachment: fixed;
+  padding-bottom: 100px;
+}
+
+.star-field {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.navbar {
+  background: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(25px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.navbar-brand { 
+  color: #fff !important; 
+  letter-spacing: 2px;
+  font-weight: 800 !important;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+/* Navbar Identity Element */
+.nav-identity-element {
+  padding: 0.5rem 1.2rem;
+  border-radius: 50px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.nav-identity-ice {
+  background: rgba(0, 212, 255, 0.15);
+  color: #88eeff !important;
+  border-color: rgba(0, 212, 255, 0.4);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+}
+
+.nav-identity-fire {
+  background: rgba(255, 77, 0, 0.15);
+  color: #ffaa88 !important;
+  border-color: rgba(255, 77, 0, 0.4);
+  box-shadow: 0 0 15px rgba(255, 77, 0, 0.2);
+}
+
+.card {
+  background: var(--card-glass) !important;
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 2rem;
+}
+
+.points-card { border: none !important; }
+.bg-gradient-fire { background: linear-gradient(135deg, #ff4d00 0%, #882200 100%) !important; box-shadow: 0 0 30px var(--fire-glow); }
+.bg-gradient-ice { background: linear-gradient(135deg, #00d4ff 0%, #005577 100%) !important; box-shadow: 0 0 30px var(--ice-glow); }
+
+.btn-redeem-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 0, 0, 0.25) !important; /* BRIGHT RED GLASS */
+  border: 2px solid #ff0000 !important;
+  color: #ff0000 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.6));
+}
+
+.btn-redeem-circle:hover {
+  background: #ff0000 !important;
+  color: #fff !important;
+  box-shadow: 0 0 25px #ff0000;
+  transform: scale(1.1);
+}
+
+/* Schedule Card - BALANCED & VIBRANT */
+.schedule-card {
+  border: 1.5px solid var(--ice-primary) !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  min-height: 100%;
+}
+
+.schedule-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.7rem 0; 
+  display: flex;
+  justify-content: space-between;
+}
+
+.schedule-item span:first-child {
+  color: var(--fire-primary) !important; /* ORANGE DAYS */
+}
+
+.schedule-item span:last-child {
+  color: var(--ice-primary) !important; /* BLUE TIMES */
+}
+
+.schedule-item.active {
+  background: rgba(0, 212, 255, 0.1);
+  border-radius: 0.5rem;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Attendance - CENTERED & BALANCED */
+.attendance-box {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  min-height: 180px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem !important;
+}
+
+.attendance-header-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Icon & Text Visibility Fixes */
+.text-primary {
+  color: #ffffff !important;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+}
+
+.text-white { color: #ffffff !important; }
+.text-muted { color: rgba(255, 255, 255, 0.7) !important; }
+
+/* Custom Orange Banner for Anmol */
+.bg-anmol-orange {
+  background: rgba(255, 77, 0, 0.2) !important;
+  border: 1px solid rgba(255, 77, 0, 0.4) !important;
+}
+.text-anmol-orange {
+  color: #ff8844 !important;
+  text-shadow: 0 0 10px rgba(255, 77, 0, 0.3);
+}
+
+/* Week Title Gradient */
+.week-title-gradient {
+  background: linear-gradient(90deg, var(--fire-primary), #ffffff, var(--ice-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  font-weight: 800;
+}
+
+/* Week Panel Header - VISIBILITY FIX */
+.week-panel-header small.text-muted {
+  color: #ffffff !important; /* WHITE START DATE */
+  font-weight: 800 !important;
+  opacity: 1 !important;
+}
+
+/* Modal White Inputs */
+.modal-white-input {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #ced4da !important;
+  font-weight: 600 !important;
+}
+
+.modal-white-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(1) !important; /* Force it to be black/visible on white background */
+}
+
+.modal-white-input::placeholder {
+  color: #6c757d !important;
+}
+
+/* Modal Close Button Visibility */
+.btn-close {
+  filter: invert(1) sepia(1) saturate(5) hue-rotate(-45deg) !important; /* RED CLOSE BUTTON */
+  opacity: 1 !important;
+}
+
+/* Button & Icon Color Overrides */
+.btn-primary {
+  background: linear-gradient(135deg, #ff0000 0%, #aa0000 100%) !important;
+  border: none !important;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3) !important;
+  font-weight: 800 !important;
+}
+
+.btn-outline-primary {
+  color: #ff4444 !important;
+  border: 2px solid #ff4444 !important;
+  font-weight: 800 !important;
+}
+
+.btn-outline-primary:hover {
+  background: #ff4444 !important;
+  color: white !important;
+}
+
+/* Goals & Logs */
+.goal-container { background: rgba(0, 0, 0, 0.4); border-radius: 1.5rem; padding: 1.5rem; border: 1px solid var(--glass-border); }
+.task-card { background: rgba(255, 255, 255, 0.02) !important; border: 1px solid rgba(255, 255, 255, 0.05) !important; }
+.ice-task { border-left: 4px solid var(--ice-primary) !important; }
+.fire-task { border-left: 4px solid var(--fire-primary) !important; }
+
+.log-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.custom-scroll::-webkit-scrollbar { width: 4px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+
+.modal-content {
+  background: rgba(10, 10, 15, 0.98) !important;
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 2.5rem !important;
+  color: #fff !important;
+}
+
+.form-control, .form-select {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
