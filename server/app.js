@@ -12,6 +12,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ message: 'Database connection failed' });
+  }
+});
+
+
 /* -------------------- MongoDB Connection -------------------- */
 let isConnected = false;
 
