@@ -36,7 +36,7 @@ const attendanceSchema = new mongoose.Schema({
   penaltyPoints: { type: Number, default: 0 }
 }, { timestamps: true });
 
-export const Task = mongoose.model('Task', taskSchema);
-export const Week = mongoose.model('Week', weekSchema);
-export const PenaltyLog = mongoose.model('PenaltyLog', penaltyLogSchema);
-export const Attendance = mongoose.model('Attendance', attendanceSchema);
+export const Task = mongoose.models.Task || mongoose.model('Task', taskSchema);
+export const Week = mongoose.models.Week || mongoose.model('Week', weekSchema);
+export const PenaltyLog = mongoose.models.PenaltyLog || mongoose.model('PenaltyLog', penaltyLogSchema);
+export const Attendance = mongoose.models.Attendance || mongoose.model('Attendance', attendanceSchema);

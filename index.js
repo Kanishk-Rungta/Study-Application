@@ -7,12 +7,36 @@ import { Week, Task, PenaltyLog, Attendance } from './models.js';
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+
 app.use(cors());
 app.use(express.json());
 
-/* =======================
-   Schedule + Helpers
-======================= */
+// MongoDB Connection
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/study_app';
+
+console.log('--- Database Connection Debug ---');
+console.log(`Connecting to: ${MONGODB_URI.split('@')[1] || MONGODB_URI}`); // Log only host part for privacy
+
+mongoose.connect(MONGODB_URI, {
+  serverSelectionTimeoutMS: 10000, // Wait up to 10s for connection
+})
+.then(() => console.log('✅ MongoDB connected successfully.'))
+.catch(err => {
+  console.error('❌ MongoDB initial connection error:');
+  console.error(err);
+  console.error('--------------------------------');
+});
+
+mongoose.connection.on('error', err => {
+  console.error('🚨 Mongoose runtime error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.warn('⚠️ Mongoose disconnected from MongoDB Atlas');
+});
+
+// Schedule Data
 const SCHEDULE = {
   1: { start: "17:00", name: "Monday" },
   2: { start: null, name: "Tuesday" }, 
@@ -20,6 +44,10 @@ const SCHEDULE = {
   4: { start: "18:30", name: "Thursday" },
   5: { start: "15:00", name: "Friday" },
   6: { start: null, name: "Saturday" }
+};
+
+const getLocalDateString = (date) => {
+  return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 };
 
 const getLocalInfo = () => {
@@ -69,6 +97,7 @@ const checkAndProcessAutomaticBunks = async () => {
               type: 'Penalty',
               uniqueKey: bunkUniqueKey
             });
+            console.log(`✅ Processed AUTO-BUNK for ${user} on ${dateStr}`);
           } catch (e) {
             // Ignore duplicate key errors (code 11000)
             if (e.code !== 11000) {
@@ -80,10 +109,6 @@ const checkAndProcessAutomaticBunks = async () => {
     }
   }
 };
-
-/* =======================
-   Routes
-======================= */
 
 app.get('/api/weeks', async (req, res) => {
   try {
@@ -209,10 +234,8 @@ app.patch('/api/tasks/:id/complete', async (req, res) => {
 app.delete('/api/tasks/:id', async (req, res) => {
   try {
     const task = await Task.findByIdAndDelete(req.params.id);
-    if (task) {
-      await Week.findByIdAndUpdate(task.week, { $pull: { tasks: task._id } });
-      await PenaltyLog.deleteMany({ task: task._id });
-    }
+    await Week.findByIdAndUpdate(task.week, { $pull: { tasks: task._id } });
+    await PenaltyLog.deleteMany({ task: task._id });
     res.json({ message: 'Deleted' });
   } catch (error) { res.status(500).json({ message: error.message }); }
 });
@@ -220,11 +243,9 @@ app.delete('/api/tasks/:id', async (req, res) => {
 app.delete('/api/weeks/:id', async (req, res) => {
   try {
     const week = await Week.findById(req.params.id);
-    if (week) {
-      await Task.deleteMany({ _id: { $in: week.tasks } });
-      await PenaltyLog.deleteMany({ task: { $in: week.tasks } });
-      await Week.findByIdAndDelete(req.params.id);
-    }
+    await Task.deleteMany({ _id: { $in: week.tasks } });
+    await PenaltyLog.deleteMany({ task: { $in: week.tasks } });
+    await Week.findByIdAndDelete(req.params.id);
     res.json({ message: 'Wiped' });
   } catch (error) { res.status(500).json({ message: error.message }); }
 });
@@ -261,4 +282,4 @@ app.get('/api/stats', async (req, res) => {
   } catch (error) { res.status(500).json({ message: error.message }); }
 });
 
-export default app;
+app.listen(PORT, () => { console.log(`Server running on port ${PORT}`); });
