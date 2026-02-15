@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import serverless from 'serverless-http';
 import { Week, Task, PenaltyLog, Attendance } from './models.js';
 
 dotenv.config();
@@ -11,34 +12,22 @@ app.use(cors());
 app.use(express.json());
 
 /* =======================
-   MongoDB (Vercel Safe)
+   MongoDB Connection
 ======================= */
-let isConnected = false;
+let cached = global.mongoose;
+if (!cached) cached = global.mongoose = { conn: null, promise: null };
 
 async function connectDB() {
-  if (isConnected) return;
+  if (cached.conn) return cached.conn;
 
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGODB_URI, {
       serverSelectionTimeoutMS: 10000,
-    });
-    isConnected = true;
-    console.log('✅ MongoDB connected');
-  } catch (err) {
-    console.error('❌ MongoDB connection failed', err);
-    throw err;
+    }).then((mongoose) => mongoose);
   }
+  cached.conn = await cached.promise;
+  return cached.conn;
 }
-
-// Ensure DB is connected before every request
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch {
-    res.status(500).json({ message: 'Database connection failed' });
-  }
-});
 
 /* =======================
    Schedule + Helpers
@@ -71,6 +60,15 @@ const getBalance = async (user) => {
    Routes
 ======================= */
 
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (e) {
+    res.status(500).json({ message: 'Database connection failed', error: e.message });
+  }
+});
+
 app.get('/api/weeks', async (_, res) => {
   try {
     const weeks = await Week.find().populate('tasks').sort({ startDate: -1 });
@@ -92,9 +90,7 @@ app.post('/api/weeks', async (req, res) => {
 app.post('/api/tasks', async (req, res) => {
   try {
     const task = await Task.create(req.body);
-    await Week.findByIdAndUpdate(req.body.weekId, {
-      $push: { tasks: task._id }
-    });
+    await Week.findByIdAndUpdate(req.body.weekId, { $push: { tasks: task._id } });
     res.status(201).json(task);
   } catch (e) {
     res.status(400).json({ message: e.message });
@@ -148,6 +144,6 @@ app.delete('/api/weeks/:id', async (req, res) => {
 });
 
 /* =======================
-   EXPORT FOR VERCEL
+   Export for Vercel
 ======================= */
-export default app;
+export const handler = serverless(app);
