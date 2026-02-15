@@ -218,8 +218,4 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
-/* -------------------- EXPORT FOR VERCEL -------------------- */
-export default async function handler(req, res) {
-  await connectDB();
-  return app(req, res);
-}
+export default app;
