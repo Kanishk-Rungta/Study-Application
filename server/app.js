@@ -115,13 +115,23 @@ app.get('/api/attendance/today', async (req, res) => {
 
 app.get('/api/stats', async (req, res) => {
   try {
-    const logs = await PenaltyLog.find();
-    const stats = { Kanishk: 0, Anmol: 0 };
-    logs.forEach(l => stats[l.user] += l.points);
+    const logs = await PenaltyLog.find().sort({ createdAt: -1 });
+
+    const stats = {
+      Kanishk: { points: 0, logs: [] },
+      Anmol: { points: 0, logs: [] }
+    };
+
+    logs.forEach(log => {
+      stats[log.user].points += log.points;
+      stats[log.user].logs.push(log);
+    });
+
     res.json(stats);
   } catch (e) {
-    res.status(500).json(e);
+    res.status(500).json({ message: e.message });
   }
 });
+
 
 export default app;
