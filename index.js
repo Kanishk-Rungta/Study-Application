@@ -48,15 +48,18 @@ const SCHEDULE = {
 };
 
 const getLocalDateString = (date) => {
-  return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+  const istOffset = 5.5 * 60 * 60000;
+  const istDate = new Date(date.getTime() + istOffset);
+  return istDate.toISOString().split('T')[0];
 };
 
 const getLocalInfo = () => {
   const now = new Date();
-  const localDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
-  const dateStr = localDate.toISOString().split('T')[0];
-  const dayOfWeek = now.getDay();
-  return { now, dateStr, dayOfWeek };
+  const istOffset = 5.5 * 60 * 60000;
+  const istDate = new Date(now.getTime() + istOffset);
+  const dateStr = istDate.toISOString().split('T')[0];
+  const dayOfWeek = istDate.getUTCDay();
+  return { now, dateStr, dayOfWeek, istDate };
 };
 
 const getBalance = async (user) => {
@@ -66,13 +69,14 @@ const getBalance = async (user) => {
 };
 
 const checkAndProcessAutomaticBunks = async () => {
-  const { now, dateStr, dayOfWeek } = getLocalInfo();
+  const { now, dateStr, dayOfWeek, istDate } = getLocalInfo();
   const daySched = SCHEDULE[dayOfWeek];
 
   if (daySched && daySched.start) {
     const [schedH, schedM] = daySched.start.split(':').map(Number);
-    const cutoffTime = new Date(now);
-    cutoffTime.setHours(schedH, schedM + 100, 0, 0); 
+    const cutoffIst = new Date(istDate);
+    cutoffIst.setUTCHours(schedH, schedM + 100, 0, 0); 
+    const cutoffTime = new Date(cutoffIst.getTime() - (5.5 * 60 * 60000));
 
     if (now > cutoffTime) {
       const users = ['Kanishk', 'Anmol'];
@@ -140,7 +144,7 @@ app.post('/api/tasks', async (req, res) => {
 
 app.post('/api/attendance/check-in', async (req, res) => {
   const { user } = req.body;
-  const { now, dateStr, dayOfWeek } = getLocalInfo();
+  const { now, dateStr, dayOfWeek, istDate } = getLocalInfo();
   const daySched = SCHEDULE[dayOfWeek];
   const otherUser = user === 'Kanishk' ? 'Anmol' : 'Kanishk';
   
@@ -155,8 +159,9 @@ app.post('/api/attendance/check-in', async (req, res) => {
 
     if (daySched && daySched.start) {
       const [schedH, schedM] = daySched.start.split(':').map(Number);
-      const schedTime = new Date(now);
-      schedTime.setHours(schedH, schedM, 0, 0);
+      const schedIst = new Date(istDate);
+      schedIst.setUTCHours(schedH, schedM, 0, 0);
+      const schedTime = new Date(schedIst.getTime() - (5.5 * 60 * 60000));
 
       if (now > schedTime) {
         minsLate = Math.floor((now - schedTime) / (1000 * 60));
@@ -211,14 +216,15 @@ app.patch('/api/tasks/:id/complete', async (req, res) => {
 
     const otherUser = task.assignedUser === 'Kanishk' ? 'Anmol' : 'Kanishk';
     const now = new Date();
-    const dueDate = new Date(task.dueDate);
-    dueDate.setHours(23, 59, 59, 999);
+    const dueDateIst = new Date(task.dueDate);
+    dueDateIst.setUTCHours(23, 59, 59, 999);
+    const dueDateUtc = new Date(dueDateIst.getTime() - (5.5 * 60 * 60000));
 
     let status = 'Completed On Time';
     let reward = 0;
     let logReason = `${task.assignedUser} finished task on time.`;
 
-    if (now > dueDate) {
+    if (now > dueDateUtc) {
       status = 'Completed Late';
       const diffDays = Math.ceil((now - dueDate) / (1000 * 60 * 60 * 24));
       reward = diffDays * 10;
