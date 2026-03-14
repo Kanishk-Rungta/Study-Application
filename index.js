@@ -38,12 +38,13 @@ mongoose.connection.on('disconnected', () => {
 
 // Schedule Data
 const SCHEDULE = {
-  1: { start: "17:00", name: "Monday" },
+  1: { start: "13:00", name: "Monday" },
   2: { start: null, name: "Tuesday" }, 
-  3: { start: "17:00", name: "Wednesday" },
-  4: { start: "18:30", name: "Thursday" },
-  5: { start: "15:00", name: "Friday" },
-  6: { start: null, name: "Saturday" }
+  3: { start: "13:00", name: "Wednesday" },
+  4: { start: null, name: "Thursday" },
+  5: { start: "13:00", name: "Friday" },
+  6: { start: "13:00", name: "Saturday" },
+  0: { start: "13:00", name: "Sunday" }
 };
 
 const getLocalDateString = (date) => {
