@@ -85,15 +85,16 @@ const checkAndProcessAutomaticBunks = async () => {
           attendance.status = 'Bunked';
           await attendance.save();
 
-          const logReason = `${user} Bunked (Auto) on ${dateStr} - 100 pts deducted.`;
+          const otherUser = user === 'Kanishk' ? 'Anmol' : 'Kanishk';
+          const logReason = `${user} Bunked (Auto) on ${dateStr} - 100 pts awarded to ${otherUser}`;
           const bunkUniqueKey = `auto-bunk-${user}-${dateStr}`;
 
           try {
             await PenaltyLog.create({ 
-              user: user, 
+              user: otherUser, 
               fromUser: 'System', 
               reason: logReason, 
-              points: -100, 
+              points: 100, 
               type: 'Penalty',
               uniqueKey: bunkUniqueKey
             });
@@ -159,15 +160,13 @@ app.post('/api/attendance/check-in', async (req, res) => {
 
       if (now > schedTime) {
         minsLate = Math.floor((now - schedTime) / (1000 * 60));
-        pointsToAward = -minsLate;
-        logReason = `${user} arrived ${minsLate} mins late. Deducted ${minsLate} points.`;
+        pointsToAward = minsLate;
+        logReason = `${user} arrived ${minsLate} mins late. Points awarded to ${otherUser}.`;
       } else {
         logReason = `${user} arrived on time.`;
-        pointsToAward = 0;
       }
     } else {
       logReason = `${user} logged an extra session (Break Day)`;
-        pointsToAward = 0;
     }
 
     if (!attendance) attendance = new Attendance({ user, date: dateStr });
@@ -177,7 +176,7 @@ app.post('/api/attendance/check-in', async (req, res) => {
     await attendance.save();
 
     await PenaltyLog.create({
-      user: user,
+      user: pointsToAward > 0 ? otherUser : user,
       fromUser: 'System',
       reason: logReason,
       points: pointsToAward,
@@ -191,13 +190,14 @@ app.post('/api/attendance/check-in', async (req, res) => {
 app.post('/api/attendance/bunk', async (req, res) => {
   const { user } = req.body;
   const { dateStr } = getLocalInfo();
+  const otherUser = user === 'Kanishk' ? 'Anmol' : 'Kanishk';
   try {
     let attendance = await Attendance.findOne({ user, date: dateStr });
     if (attendance && attendance.status !== 'Not Arrived') return res.status(400).json({ message: "Already marked." });
     if (!attendance) attendance = new Attendance({ user, date: dateStr });
     attendance.status = 'Bunked';
     await attendance.save();
-    await PenaltyLog.create({ user: user, fromUser: user, reason: `${user} Bunked - 100 pts deducted.`, points: -100, type: 'Penalty' });
+    await PenaltyLog.create({ user: otherUser, fromUser: user, reason: `${user} Bunked - 100 pts awarded to ${otherUser}`, points: 100, type: 'Penalty' });
     res.json(attendance);
   } catch (error) { res.status(500).json({ message: error.message }); }
 });
