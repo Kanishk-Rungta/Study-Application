@@ -19,7 +19,7 @@ const SCHEDULE = {
   3: { start: "13:00", name: "Wednesday" },
   4: { start: null, name: "Thursday" },
   5: { start: "09:00", name: "Friday" },
-  6: { start: "09:00", name: "Saturday" },
+  6: { start: "12:00", name: "Saturday" },
   0: { start: "10:00", name: "Sunday" }
 };
 
