@@ -20,8 +20,8 @@ const SCHEDULE = [
   { day: "Tuesday", time: "Break", h: null, m: null },
   { day: "Wednesday", time: "1:00 PM - 8:00 PM", h: 13, m: 0 },
   { day: "Thursday", time: "Break", h: null, m: null },
-  { day: "Friday", time: "09:00 AM - 8:00 PM", h: 9, m: 0 },
-  { day: "Saturday", time: "1:00 PM - 8:00 PM", h: 13, m: 0 },
+  { day: "Friday", time: "9:00 AM - 8:00 PM", h: 9, m: 0 },
+  { day: "Saturday", time: "9:00 AM - 8:00 PM", h: 9, m: 0 },
   { day: "Sunday", time: "1:00 PM - 8:00 PM", h: 13, m: 0 }
 ];
 
