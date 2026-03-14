@@ -38,12 +38,12 @@ mongoose.connection.on('disconnected', () => {
 
 // Schedule Data
 const SCHEDULE = {
-  1: { start: "13:00", name: "Monday" },
-  2: { start: null, name: "Tuesday" }, 
-  3: { start: "13:00", name: "Wednesday" },
-  4: { start: null, name: "Thursday" },
-  5: { start: "09:00", name: "Friday" },
-  6: { start: "14:00", name: "Saturday" },
+  1: { start: "14:30", name: "Monday" },
+  2: { start: "10:00", name: "Tuesday" }, 
+  3: { start: "14:30", name: "Wednesday" },
+  4: { start: "10:00", name: "Thursday" },
+  5: { start: "14:30", name: "Friday" },
+  6: { start: "10:00", name: "Saturday" },
   0: { start: "10:00", name: "Sunday" }
 };
 

@@ -16,13 +16,13 @@ import {
 import './App.css';
 
 const SCHEDULE = [
-  { day: "Monday", time: "1:00 PM - 8:00 PM", h: 13, m: 0 },
-  { day: "Tuesday", time: "Break", h: null, m: null },
-  { day: "Wednesday", time: "1:00 PM - 8:00 PM", h: 13, m: 0 },
-  { day: "Thursday", time: "Break", h: null, m: null },
-  { day: "Friday", time: "9:00 AM - 8:00 PM", h: 9, m: 0 },
-  { day: "Saturday", time: "2:00 PM - 8:00 PM", h: 14, m: 0 },
-  { day: "Sunday", time: "1:00 PM - 8:00 PM", h: 13, m: 0 }
+  { day: "Monday", time: "2:30 PM - 10:00 PM", h: 14, m: 30 },
+  { day: "Tuesday", time: "10:00 AM - 10:00 PM", h: 10, m: 0 },
+  { day: "Wednesday", time: "2:30 PM - 10:00 PM", h: 14, m: 30 },
+  { day: "Thursday", time: "10:00 AM - 10:00 PM", h: 10, m: 0 },
+  { day: "Friday", time: "2:30 PM - 10:00 PM", h: 14, m: 30 },
+  { day: "Saturday", time: "10:00 AM - 8:00 PM", h: 10, m: 0 },
+  { day: "Sunday", time: "10:00 AM - 5:00 PM", h: 10, m: 0 }
 ];
 
 const StarField = () => (
