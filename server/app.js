@@ -199,7 +199,7 @@ app.patch('/api/tasks/:id/complete', async (req, res) => {
 
     if (now > dueDateUtc) {
       status = 'Completed Late';
-      const diffDays = Math.ceil((now - dueDate) / (1000 * 60 * 60 * 24));
+      const diffDays = Math.ceil((now - dueDateUtc) / (1000 * 60 * 60 * 24));
       reward = diffDays * 10;
       logReason = `${task.assignedUser} finished task ${diffDays} days late. 10 pts/day awarded to ${otherUser}.`;
     }
