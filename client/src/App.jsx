@@ -78,7 +78,7 @@ const TaskCard = ({ task, onComplete, onDelete, currentIdentity }) => {
             </div>
             <div>
               <h6 className={`mb-0 fw-bold text-white ${task.status !== 'Pending' ? 'text-decoration-line-through opacity-50' : ''}`}>{task.title}</h6>
-              <small className="text-muted d-flex align-items-center gap-2">
+              <small className={`d-flex align-items-center gap-2 fw-bold mt-1 ${isIceUser ? 'text-info' : 'text-danger'}`}>
                 <Calendar size={12} /> Due: {new Date(task.dueDate).toLocaleDateString()}
               </small>
             </div>
@@ -199,10 +199,11 @@ function App() {
   const getLogIcon = (log) => {
     if (log.type === 'Redemption') return <Gift size={16} />;
     const r = log.reason.toLowerCase();
-    if (r.includes('bunked')) return <AlertTriangle size={16} />;
-    if (r.includes('late arrival')) return <Clock size={16} />;
-    if (r.includes('completed on time')) return <CheckCircle size={16} />;
-    if (r.includes('completed late')) return <Calendar size={16} />;
+    if (r.includes('bunked')) return <XCircle size={16} />;
+    if (r.includes('arrived') && r.includes('late')) return <Clock size={16} />;
+    if (r.includes('arrived') && r.includes('on time')) return <CheckCircle size={16} />;
+    if (r.includes('finished task') && r.includes('late')) return <History size={16} />;
+    if (r.includes('finished task') && r.includes('on time')) return <Award size={16} />;
     return <Zap size={16} />;
   };
 
@@ -210,9 +211,9 @@ function App() {
     if (log.type === 'Redemption') return 'warning';
     const r = log.reason.toLowerCase();
     if (r.includes('bunked')) return 'danger';
-    if (r.includes('late arrival')) return 'danger';
-    if (r.includes('completed on time')) return 'success';
-    if (r.includes('completed late')) return 'warning';
+    if (r.includes('arrived') && r.includes('late')) return 'danger';
+    if (r.includes('finished task') && r.includes('late')) return 'warning';
+    if (r.includes('on time')) return 'success';
     return 'primary';
   };
 
@@ -356,7 +357,7 @@ function App() {
             <Card className="border-0 shadow-lg h-100"><div className="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center"><h5 className="fw-bold mb-0 text-white tracking-widest">GLOBAL LOG</h5><History size={20} className="text-primary" /></div><div className="custom-scroll p-0" style={{ maxHeight: '650px', overflowY: 'auto' }}><ListGroup variant="flush">{Object.values(stats).flatMap(s => s.logs).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).map((log, i) => (<ListGroup.Item key={i} className="bg-transparent log-item border-0"><div className="d-flex gap-3">
                         <div className={`log-icon-circle bg-opacity-10 bg-${getLogColor(log)} text-${getLogColor(log)}`}>{getLogIcon(log)}</div>
                         <div className="w-100">
-                          <div className="d-flex justify-content-between"><span className={`fw-bold small ${log.user === 'Anmol' ? 'text-fire' : 'text-ice'}`}>{log.user}</span><span className="small text-muted">{new Date(log.createdAt).toLocaleDateString()}</span></div>
+                          <div className="d-flex justify-content-between"><span className={`fw-bold small ${log.user === 'Anmol' ? 'text-fire' : 'text-ice'}`}>{log.user}</span><span className="small text-white fw-bold">{new Date(log.createdAt).toLocaleDateString()}</span></div>
                           <div className="text-white small opacity-75 fw-medium">{log.reason}</div>
                           <Badge bg={log.points > 0 ? 'success' : log.points < 0 ? 'danger' : 'secondary'} className="mt-1 shadow-sm">{log.points > 0 ? '+' : ''}{log.points} pts</Badge>
                         </div>
