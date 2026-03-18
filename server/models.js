@@ -36,7 +36,16 @@ const attendanceSchema = new mongoose.Schema({
   penaltyPoints: { type: Number, default: 0 }
 }, { timestamps: true });
 
+const deletedItemSchema = new mongoose.Schema({
+  itemType: { type: String, enum: ['Task', 'Week'], required: true },
+  itemTitle: { type: String, required: true },
+  deletedAt: { type: Date, default: Date.now },
+  originalCreatedAt: { type: Date },
+  originalData: { type: mongoose.Schema.Types.Mixed }
+});
+
 export const Task = mongoose.models.Task || mongoose.model('Task', taskSchema);
 export const Week = mongoose.models.Week || mongoose.model('Week', weekSchema);
 export const PenaltyLog = mongoose.models.PenaltyLog || mongoose.model('PenaltyLog', penaltyLogSchema);
 export const Attendance = mongoose.models.Attendance || mongoose.model('Attendance', attendanceSchema);
+export const DeletedItem = mongoose.models.DeletedItem || mongoose.model('DeletedItem', deletedItemSchema);

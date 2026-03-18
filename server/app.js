@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { Week, Task, PenaltyLog, Attendance } from './models.js';
+import { Week, Task, PenaltyLog, Attendance, DeletedItem } from './models.js';
 
 dotenv.config();
 
@@ -215,6 +215,12 @@ app.delete('/api/tasks/:id', async (req, res) => {
   try {
     const task = await Task.findByIdAndDelete(req.params.id);
     if (task) {
+      await DeletedItem.create({ 
+        itemType: 'Task', 
+        itemTitle: task.title, 
+        originalCreatedAt: task.createdAt,
+        originalData: task 
+      });
       await Week.findByIdAndUpdate(task.week, { $pull: { tasks: task._id } });
       await PenaltyLog.deleteMany({ task: task._id });
     }
@@ -226,6 +232,12 @@ app.delete('/api/weeks/:id', async (req, res) => {
   try {
     const week = await Week.findById(req.params.id);
     if (week) {
+      await DeletedItem.create({ 
+        itemType: 'Week', 
+        itemTitle: week.title, 
+        originalCreatedAt: week.createdAt,
+        originalData: week 
+      });
       await Task.deleteMany({ _id: { $in: week.tasks } });
       await PenaltyLog.deleteMany({ task: { $in: week.tasks } });
       await Week.findByIdAndDelete(req.params.id);
